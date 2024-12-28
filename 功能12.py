@@ -1,4 +1,3 @@
-# 修改添加备注
 import datetime
 # 初始化存储收入、支出的列表
 incomes = []
