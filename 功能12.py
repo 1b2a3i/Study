@@ -1,8 +1,11 @@
 import datetime
+
 # 初始化存储收入、支出的列表
 incomes = []
 expenses = []
 budget = 0  # 用户预算
+
+
 def record_income():
     date = input("请输入日期 (YYYY-MM-DD): ")
     amount = float(input("请输入收入金额: "))
@@ -13,6 +16,8 @@ def record_income():
     note = input("请输入备注: ")
     incomes.append({"date": date, "amount": amount, "category": category, "note": note})
     print("收入记录已添加！")
+
+
 def record_expense():
     date = input("请输入日期 (YYYY-MM-DD): ")
     amount = float(input("请输入支出金额: "))
@@ -23,6 +28,8 @@ def record_expense():
     note = input("请输入备注: ")
     expenses.append({"date": date, "amount": amount, "category": category, "note": note})
     print("支出记录已添加！")
+
+
 def query_records():
     print("\n1. 查询收入记录")
     print("2. 查询支出记录")
@@ -36,10 +43,12 @@ def query_records():
     else:
         print("无效选择！")
         return
-    
+
     print(f"\n所有{record_type}记录:")
     for record in records:
         print(f"日期: {record['date']}, 金额: {record['amount']}, 类别: {record['category']}, 备注: {record['note']}")
+
+
 def calculate_statistics():
     total_income = sum(record['amount'] for record in incomes)
     total_expense = sum(record['amount'] for record in expenses)
@@ -47,15 +56,62 @@ def calculate_statistics():
     print(f"\n总收入: {total_income}")
     print(f"总支出: {total_expense}")
     print(f"当前余额: {balance}")
+
     if budget > 0:
         if total_expense > budget:
             print("警告：您的支出已超出预算！")
         else:
             print(f"您的支出在预算范围内，剩余预算: {budget - total_expense}")
+
+
 def set_budget():
     global budget
     budget = float(input("请输入您的预算金额: "))
     print("预算已设置！")
+
+
+def view_all_bills():
+    all_bills = incomes + expenses
+    if not all_bills:
+        print("没有账单记录！")
+        return
+
+    # 按日期排序
+    all_bills.sort(key=lambda x: x['date'])
+
+    print("\n所有账单记录:")
+    for bill in all_bills:
+        bill_type = "收入" if bill in incomes else "支出"
+        print(
+            f"类型: {bill_type}, 日期: {bill['date']}, 金额: {bill['amount']}, 类别: {bill['category']}, 备注: {bill['note']}")
+
+
+def search_bills():
+    print("\n1. 按日期查询")
+    print("2. 按类别查询")
+    choice = input("请选择查询方式: ")
+
+    if choice == "1":
+        date = input("请输入日期 (YYYY-MM-DD): ")
+        results = [bill for bill in incomes + expenses if bill['date'] == date]
+    elif choice == "2":
+        category = input("请输入类别: ")
+        results = [bill for bill in incomes + expenses if bill['category'] == category]
+    else:
+        print("无效选择！")
+        return
+
+    if not results:
+        print("未找到符合条件的账单记录！")
+        return
+
+    print("\n查询结果:")
+    for bill in results:
+        bill_type = "收入" if bill in incomes else "支出"
+        print(
+            f"类型: {bill_type}, 日期: {bill['date']}, 金额: {bill['amount']}, 类别: {bill['category']}, 备注: {bill['note']}")
+
+
 def main_menu():
     while True:
         print("\n个人账单管理系统")
@@ -64,8 +120,11 @@ def main_menu():
         print("3. 查询记录")
         print("4. 统计")
         print("5. 设置预算")
-        print("6. 退出")
+        print("6. 查看所有账单")
+        print("7. 查询账单")
+        print("8. 退出")
         choice = input("请选择操作: ")
+
         if choice == "1":
             record_income()
         elif choice == "2":
@@ -77,9 +136,15 @@ def main_menu():
         elif choice == "5":
             set_budget()
         elif choice == "6":
+            view_all_bills()
+        elif choice == "7":
+            search_bills()
+        elif choice == "8":
             print("退出系统。")
             break
         else:
             print("无效选择，请重新输入！")
+
+
 if __name__ == "__main__":
     main_menu()
